@@ -2,8 +2,8 @@ const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
     // WICHTIG: Passe diese Variablen an dein GitHub-Repo an
-    const REPO_OWNER = 'your-github-username';
-    const REPO_NAME = 'your-repo-name';
+    const REPO_OWNER = 'jakobneukirchner';
+    const REPO_NAME = 'shop';
     const FILE_PATH = 'data/products.json'; // Passe den Pfad zu deiner JSON-Datei an
 
     // Dieser Token wird über Netlify-Umgebungsvariablen bereitgestellt
