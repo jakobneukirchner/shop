@@ -1,128 +1,280 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>K12 Services Onlineshop – Im Bau</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap"
-    rel="stylesheet"
-  />
-  <style>
-    :root {
-      /* Material You inspiriertes K12 Farbschema */
-      --primary: #6750a4;
-      --primary-light: #d0bcff;
-      --primary-dark: #381e72;
-
-      --secondary: #03dac6;
-      --secondary-light: #aafff9;
-      --secondary-dark: #00b3a6;
-
-      --accent: #ff4f58;
-      --accent-light: #ffccd2;
-      --accent-dark: #b3242a;
-
-      --background: #fffbfe;
-      --surface: #f7f0ff;
-
-      --text-primary: #1c1b1f;
-      --text-secondary: #49454f;
-    }
-    body {
-      margin: 0;
-      background: var(--background);
-      color: var(--text-primary);
-      font-family: "Kanit", sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 16px;
-      text-align: center;
-    }
-    .container {
-      background: var(--surface);
-      max-width: 420px;
-      border-radius: 28px;
-      padding: 48px 32px;
-      box-shadow: 0 8px 28px rgba(103, 80, 164, 0.2);
-    }
-    h1 {
-      color: var(--primary);
-      font-weight: 700;
-      font-size: 2rem;
-      margin-bottom: 16px;
-      letter-spacing: 0.04em;
-    }
-    p {
-      font-size: 1.1rem;
-      color: var(--text-secondary);
-      margin-bottom: 28px;
-      line-height: 1.5;
-    }
-    .construction-icon {
-      width: 90px;
-      height: 90px;
-      margin: 0 auto 24px auto;
-      background: linear-gradient(
-        135deg,
-        var(--primary-light) 0%,
-        var(--secondary) 98%
-      );
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 10px #25ced155;
-    }
-    .construction-icon svg {
-      width: 56px;
-      height: 56px;
-      fill: white;
-      filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.15));
-    }
-    .contact {
-      margin-top: 36px;
-      font-size: 1rem;
-      color: var(--secondary-dark);
-      letter-spacing: 0.03em;
-    }
-
-    @media (max-width: 460px) {
-      .container {
-        padding: 32px 20px;
-      }
-      h1 {
-        font-size: 1.6rem;
-      }
-      .construction-icon {
-        width: 64px;
-        height: 64px;
-      }
-      .construction-icon svg {
-        width: 36px;
-        height: 36px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mein Online Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F3F4F6;
+        }
+        .card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .btn-primary {
+            background-color: #3B82F6;
+            color: white;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .btn-primary:hover {
+            background-color: #2563EB;
+        }
+        .btn-accent {
+            background-color: #EF4444;
+            color: white;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .btn-accent:hover {
+            background-color: #DC2626;
+        }
+        .cart-icon {
+            position: relative;
+        }
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #EF4444;
+            color: white;
+            border-radius: 9999px;
+            padding: 2px 6px;
+            font-size: 0.75rem;
+            line-height: 1;
+        }
+        .modal {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+    </style>
 </head>
-<body>
-  <main class="container" role="main" aria-label="Website im Bau">
-    <div class="construction-icon" aria-hidden="true" tabindex="-1">
-      <svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-        <path d="M39 15 L47 7 L49 9 L41 17 Z" />
-        <rect x="26" y="24" width="16" height="7" rx="2" fill="white" />
-        <rect x="30" y="31" width="8" height="18" rx="4" fill="white" />
-        <circle cx="34" cy="44" r="4" fill="white" />
-      </svg>
+<body class="p-6 md:p-12">
+
+    <!-- Header mit Warenkorb-Symbol -->
+    <header class="flex justify-between items-center mb-12">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Mein Online Shop</h1>
+        <div class="cart-icon cursor-pointer p-2 rounded-lg hover:bg-gray-200 transition-colors" id="cart-button">
+            <i class="fas fa-shopping-cart text-2xl text-gray-600"></i>
+            <span class="cart-count" id="cart-count">0</span>
+        </div>
+    </header>
+
+    <!-- Modal für den Warenkorb -->
+    <div id="cart-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center modal">
+        <div class="bg-white rounded-lg p-6 w-full max-w-lg mx-4 md:mx-0 shadow-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-semibold">Warenkorb</h2>
+                <button id="close-cart-modal" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <div id="cart-items" class="space-y-4 max-h-80 overflow-y-auto pr-2">
+                <!-- Warenkorb-Elemente werden hier eingefügt -->
+            </div>
+            <div class="mt-6 pt-4 border-t border-gray-200">
+                <p class="text-xl font-bold flex justify-between">
+                    <span>Gesamt:</span>
+                    <span id="cart-total-price">0,00 €</span>
+                </p>
+                <button id="checkout-button" class="btn-primary w-full mt-4 p-3 rounded-md font-semibold text-lg hover:opacity-90">Zur Kasse</button>
+            </div>
+        </div>
     </div>
-    <h1>Unsere Website entsteht hier!</h1>
-    <p>
-      Der neue K12 Services Onlineshop ist gerade im Aufbau.<br />
-      Bitte um etwas Geduld – bald gibt es alles für Schule &amp; Lernen digital.
-    </p>
-    <p class="contact">Kontakt: k12-services@pm.me</p>
-  </main>
+    
+    <!-- Lade-Modal -->
+    <div id="loading-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center modal">
+        <div class="bg-white rounded-lg p-6 shadow-lg text-center">
+            <i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-4"></i>
+            <p class="text-lg font-semibold">Wird geladen...</p>
+        </div>
+    </div>
+
+    <!-- Produkte-Grid -->
+    <main class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="products-container">
+        <div class="card bg-white rounded-lg p-6 flex flex-col items-center text-center">
+            <p class="text-gray-600 text-sm italic">Produkte werden geladen...</p>
+        </div>
+    </main>
+
+    <script>
+        const stripe = Stripe('pk_live_51S3J7kRe5qX74hi1SIM1tos4THj24Yszjh9fRyKL5VxFFiarH3Y2bFqmpvQIbbsSajwQVl9a4YK4qxZlF8rwGdjh00DZjAYX7x');
+
+        let products = [];
+        let cart = {};
+
+        const productsContainer = document.getElementById('products-container');
+        const cartButton = document.getElementById('cart-button');
+        const cartModal = document.getElementById('cart-modal');
+        const closeCartModal = document.getElementById('close-cart-modal');
+        const cartCountSpan = document.getElementById('cart-count');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartTotalPriceSpan = document.getElementById('cart-total-price');
+        const checkoutButton = document.getElementById('checkout-button');
+        const loadingModal = document.getElementById('loading-modal');
+
+        function formatPrice(priceInCents) {
+            return (priceInCents / 100).toFixed(2).replace('.', ',') + ' €';
+        }
+
+        async function fetchProducts() {
+            try {
+                // Fetch product data from the Netlify function
+                const response = await fetch('/.netlify/functions/get-products');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch products');
+                }
+                products = await response.json();
+                renderProducts();
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                productsContainer.innerHTML = '<p class="text-center text-red-500">Produkte konnten nicht geladen werden.</p>';
+            }
+        }
+
+        function renderProducts() {
+            productsContainer.innerHTML = '';
+            if (products.length === 0) {
+                 productsContainer.innerHTML = '<p class="text-center text-gray-500">Keine Produkte gefunden.</p>';
+                 return;
+            }
+            products.forEach(product => {
+                const productElement = document.createElement('div');
+                productElement.className = 'card bg-white rounded-lg p-6 flex flex-col items-center text-center';
+                productElement.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}" class="rounded-lg mb-4 w-full h-auto object-cover">
+                    <h3 class="text-xl font-semibold text-gray-800">${product.name}</h3>
+                    <p class="text-gray-600 my-2 text-sm">${product.description}</p>
+                    <p class="text-2xl font-bold text-gray-900 mt-auto">${formatPrice(product.price)}</p>
+                    <button class="add-to-cart-btn btn-primary mt-4 p-3 w-full rounded-md font-semibold hover:opacity-90" data-id="${product.id}">
+                        In den Warenkorb
+                    </button>
+                `;
+                productsContainer.appendChild(productElement);
+            });
+        }
+
+        function updateCart() {
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+            let totalItems = 0;
+
+            for (const productId in cart) {
+                if (cart[productId] > 0) {
+                    const product = products.find(p => p.id === productId);
+                    const itemTotal = product.price * cart[productId];
+                    total += itemTotal;
+                    totalItems += cart[productId];
+
+                    const cartItemElement = document.createElement('div');
+                    cartItemElement.className = 'flex items-center justify-between p-3 bg-gray-100 rounded-md';
+                    cartItemElement.innerHTML = `
+                        <div class="flex items-center">
+                            <img src="${product.image}" alt="${product.name}" class="w-12 h-12 rounded-md object-cover mr-4">
+                            <div>
+                                <h3 class="font-semibold text-gray-800">${product.name}</h3>
+                                <p class="text-gray-600 text-sm">${formatPrice(product.price)} x ${cart[productId]}</p>
+                            </div>
+                        </div>
+                        <p class="font-bold text-gray-900">${formatPrice(itemTotal)}</p>
+                    `;
+                    cartItemsContainer.appendChild(cartItemElement);
+                }
+            }
+
+            if (totalItems === 0) {
+                cartItemsContainer.innerHTML = '<p class="text-center text-gray-500">Ihr Warenkorb ist leer.</p>';
+                checkoutButton.disabled = true;
+                checkoutButton.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                checkoutButton.disabled = false;
+                checkoutButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+            
+            cartTotalPriceSpan.textContent = formatPrice(total);
+            cartCountSpan.textContent = totalItems;
+        }
+
+        productsContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('add-to-cart-btn')) {
+                const productId = e.target.dataset.id;
+                cart[productId] = (cart[productId] || 0) + 1;
+                updateCart();
+            }
+        });
+
+        cartButton.addEventListener('click', () => {
+            cartModal.classList.remove('hidden');
+        });
+
+        closeCartModal.addEventListener('click', () => {
+            cartModal.classList.add('hidden');
+        });
+
+        checkoutButton.addEventListener('click', async () => {
+            loadingModal.classList.remove('hidden');
+
+            const lineItems = Object.keys(cart)
+                .filter(id => cart[id] > 0)
+                .map(id => {
+                    const product = products.find(p => p.id === id);
+                    if (!product) {
+                        return null;
+                    }
+                    return {
+                        price_data: {
+                            currency: 'eur',
+                            product_data: {
+                                name: product.name,
+                            },
+                            unit_amount: product.price,
+                        },
+                        quantity: cart[id],
+                    };
+                }).filter(Boolean); // Entfernt Null-Werte
+
+            if (lineItems.length === 0) {
+                 loadingModal.classList.add('hidden');
+                 return;
+            }
+            
+            try {
+                const response = await fetch('/.netlify/functions/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ lineItems }),
+                });
+
+                const session = await response.json();
+
+                if (session.error) {
+                    throw new Error(session.error.message);
+                }
+
+                const result = await stripe.redirectToCheckout({ sessionId: session.id });
+
+                if (result.error) {
+                    loadingModal.classList.add('hidden');
+                    console.error('Stripe-Fehler:', result.error.message);
+                    // Besser: Zeige eine Fehlermeldung in einem modalen Fenster, anstatt alert() zu verwenden.
+                }
+            } catch (error) {
+                loadingModal.classList.add('hidden');
+                console.error('Fehler beim Checkout:', error);
+                // Besser: Zeige eine Fehlermeldung in einem modalen Fenster.
+            }
+        });
+
+        // Initialisierung
+        fetchProducts();
+        updateCart();
+    </script>
+
 </body>
 </html>
