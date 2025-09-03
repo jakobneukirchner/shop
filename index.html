@@ -102,6 +102,7 @@
     </main>
 
     <script>
+        // Setze deinen öffentlichen Stripe-Schlüssel hier ein
         const stripe = Stripe('pk_live_51S3J7kRe5qX74hi1SIM1tos4THj24Yszjh9fRyKL5VxFFiarH3Y2bFqmpvQIbbsSajwQVl9a4YK4qxZlF8rwGdjh00DZjAYX7x');
 
         let products = [];
@@ -123,7 +124,7 @@
 
         async function fetchProducts() {
             try {
-                // Fetch product data from the Netlify function
+                // Produkte von der Netlify-Funktion abrufen
                 const response = await fetch('/.netlify/functions/get-products');
                 if (!response.ok) {
                     throw new Error('Failed to fetch products');
