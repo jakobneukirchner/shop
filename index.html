@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>K12 Onlineshop – Im Bau</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Montserrat:700|Open+Sans:400&display=swap');
+    :root {
+      --primary: #6050DC; --primary-light: #9F98E0; --primary-dark: #3A2BAA;
+      --secondary: #25CED1; --secondary-light: #A3F7BF; --secondary-dark: #15AC9C;
+      --accent: #FB3640; --accent-light: #FFA3A9; --accent-dark: #B82C2F;
+      --background: #FCFCFF; --background-light: #F1F1F1; --background-dark: #22223B;
+
+      --info: #4A90E2; --info-1: #6BC1FF; --info-2: #B3D8FF; --info-3: #D7E9FF; --info-4: #0E74BC; --info-5: #125992; --info-6: #E3F2FD; --info-7: #D0E6F6; --info-8: #A0BBCF; --info-9: #00AFF0;
+      --success: #00C48C; --success-1: #17E3A6; --success-2: #47F4BB; --success-3: #7FFFDB; --success-4: #059767; --success-5: #188663; --success-6: #B2F9E9; --success-7: #8FF7CF; --success-8: #1BC099; --success-9: #25E89B;
+      --warn: #FFC542; --warn-1: #FFE596; --warn-2: #FFF5CC; --warn-3: #FFCB00; --warn-4: #FFB100; --warn-5: #FFD692; --warn-6: #FFDA69; --warn-7: #FF8800; --warn-8: #FFA940; --warn-9: #FFE0A3;
+      --error: #FF647C; --error-1: #FFA3AF; --error-2: #FFD6DA; --error-3: #FF3E58; --error-4: #BF4251; --error-5: #E94057; --error-6: #FF697A; --error-7: #FF99A3; --error-8: #FFDADF; --error-9: #F56A79;
+    }
+    body {
+      background: var(--background-light);
+      color: var(--background-dark);
+      font-family: 'Open Sans', Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background: var(--background);
+      border-radius: 32px;
+      box-shadow: 0 8px 28px #6050DC22;
+      max-width: 430px;
+      width: calc(100vw - 32px);
+      padding: 56px 32px 40px 32px;
+      text-align: center;
+    }
+    .construction-icon {
+      width: 90px; height: 90px;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary) 98%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 10px #25CED155;
+    }
+    .construction-icon svg {
+      width: 56px; height: 56px;
+    }
+    h1 {
+      font-family: 'Montserrat', Arial, sans-serif;
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 2em;
+      margin-bottom: 14px;
+      letter-spacing: 1px;
+    }
+    p {
+      font-size: 1.18em; color: var(--accent-dark);
+      margin-bottom: 18px;
+    }
+    .status-bar {
+      display: flex;
+      gap: 6px; justify-content: center; margin-top: 18px;
+    }
+    .status-ball {
+      width: 18px; height: 18px; border-radius: 50%;
+      box-shadow: 0 1px 5px #aaa2;
+      display: inline-block;
+    }
+    .status-info { background: var(--info-2);}
+    .status-success { background: var(--success-2);}
+    .status-warn { background: var(--warn-1);}
+    .status-error { background: var(--error-1);}
+    .contact-txt { font-size: 0.98em; color: var(--secondary-dark); margin-top: 28px; }
+    @media (max-width: 520px) {
+      .container { padding: 32px 12px 28px 12px; }
+      h1 { font-size: 1.3em; }
+      .construction-icon { width: 64px; height: 64px; }
+      .construction-icon svg { width: 36px; height: 36px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="construction-icon">
+      <!-- Symbolischer SVG Kran/Schraubenschlüssel -->
+      <svg viewBox="0 0 56 56">
+        <path fill="#6050DC" d="M39 15 L47 7 L49 9 L41 17 Z"/>
+        <rect x="26" y="24" width="16" height="7" rx="2" fill="#25CED1"/>
+        <rect x="30" y="31" width="8" height="18" rx="4" fill="#FB3640"/>
+        <circle cx="34" cy="44" r="4" fill="#FFE156"/>
+      </svg>
+    </div>
+    <h1>Unsere Website entsteht hier!</h1>
+    <p>Der neue K12 Services Onlineshop ist gerade in Aufbau.<br>Bitte um etwas Geduld.</p>
+    <div class="status-bar">
+      <span class="status-ball status-info"></span>
+      <span class="status-ball status-success"></span>
+      <span class="status-ball status-warn"></span>
+      <span class="status-ball status-error"></span>
+    </div>
+    <div class="contact-txt">Kontakt: k12-services@pm.me</div>
+  </div>
+</body>
+</html>
