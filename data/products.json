@@ -1,1 +1,23 @@
-
+[
+  {
+    "id": "item_1",
+    "name": "Kaffeebohnen 'Brasil'",
+    "description": "Aromatische, mittelstark geröstete Bohnen aus Brasilien.",
+    "price": 1299,
+    "image": "https://placehold.co/400x300/F3F4F6/2563EB?text=Kaffee"
+  },
+  {
+    "id": "item_2",
+    "name": "Bio-Tee-Mischung",
+    "description": "Eine erfrischende Kräutermischung mit Minze und Kamille.",
+    "price": 950,
+    "image": "https://placehold.co/400x300/F3F4F6/2563EB?text=Tee"
+  },
+  {
+    "id": "item_3",
+    "name": "Schokoladentafel",
+    "description": "Dunkle Schokolade mit 70% Kakaoanteil.",
+    "price": 499,
+    "image": "https://placehold.co/400x300/F3F4F6/2563EB?text=Schokolade"
+  }
+]
