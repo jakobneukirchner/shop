@@ -2,7 +2,7 @@
   "name": "netlify-shop-functions",
   "version": "1.0.0",
   "description": "Dependencies for Netlify functions",
-  "main": "index.js",
+  "main": "create-checkout-session.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
