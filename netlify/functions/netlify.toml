@@ -1,0 +1,3 @@
+[build]
+  command = "npm --prefix netlify/functions install"
+  functions = "netlify/functions"
