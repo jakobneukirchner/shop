@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "node-fetch": "^2.6.1",
-    "stripe": "^8.195.0"
+    "node-fetch": "^3.3.2",
+    "stripe": "^14.16.0"
   }
 }
