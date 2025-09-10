@@ -1,30 +1,16 @@
 [
   {
     "id": "prod_Pz6eP9xQ0yH1r2g",
-    "name": "Minimalistischer Schreibtischstuhl",
-    "description": "Ein ergonomischer Stuhl im minimalistischen Design, perfekt für lange Arbeitstage.",
-    "price": 24999,
-    "image": "https://placehold.co/400x400/3B82F6/ffffff?text=Stuhl"
-  },
-  {
-    "id": "prod_Pz6eP9xQ0yH1r2h",
-    "name": "Zeitloser Holztisch",
-    "description": "Aus nachhaltigem Eichenholz gefertigt, bietet dieser Tisch viel Platz für kreative Ideen.",
-    "price": 49999,
-    "image": "https://placehold.co/400x400/3B82F6/ffffff?text=Tisch"
-  },
-  {
-    "id": "prod_Pz6eP9xQ0yH1r2i",
-    "name": "Elegante Stehlampe",
-    "description": "Sorgt mit ihrem warmen Licht für eine gemütliche Atmosphäre in jedem Raum.",
-    "price": 12999,
-    "image": "https://placehold.co/400x400/3B82F6/ffffff?text=Lampe"
+    "name": "PRODUKT 1",
+    "description": "Beschreibung 1",
+    "price": 50,
+    "image": "https://placehold.co/400x400/3B82F6/ffffff?text=1"
   },
   {
     "id": "prod_Pz6eP9xQ0yH1r2j",
-    "name": "Kunstvolles Wandbild",
-    "description": "Ein abstraktes Kunstwerk, das jedem Interieur einen modernen Touch verleiht.",
-    "price": 8999,
-    "image": "https://placehold.co/400x400/3B82F6/ffffff?text=Bild"
+    "name": "PRODUKT 2",
+    "description": "Beschreibung 2",
+    "price": 67,
+    "image": "https://placehold.co/400x400/3B82F6/ffffff?text=2"
   }
 ]
