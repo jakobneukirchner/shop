@@ -12,10 +12,12 @@ exports.handler = async (event) => {
     try {
         const { items } = JSON.parse(event.body);
 
-        // Verwende statische Produktdaten für den Checkout.
+        // Verwende statische Produktdaten für den Checkout. Die IDs müssen mit denen in der index.html übereinstimmen.
         const availableProducts = [
-            { id: "prod_1", name: "Produkt 1", price: 50 }, // 50 Cent
-            { id: "prod_2", name: "Produkt 2", price: 67 }, // 67 Cent
+            { id: "prod_Pz6eP9xQ0yH1r2g", name: "Produkt 1", price: 50 },
+            { id: "prod_Pz6eP9xQ0yH1r2h", name: "Produkt 2", price: 67 },
+            { id: "prod_Pz6eP9xQ0yH1r2i", name: "Produkt 3", price: 12999 },
+            { id: "prod_Pz6eP9xQ0yH1r2j", name: "Produkt 4", price: 8999 },
         ];
 
         const line_items = items.map(item => {
