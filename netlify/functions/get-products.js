@@ -3,20 +3,21 @@ const fetch = require('node-fetch');
 // WICHTIG: Ersetze diese Platzhalter durch deine eigenen GitHub-Informationen
 const REPO_OWNER = 'jakobneukirchner';
 const REPO_NAME = 'shop';
+const REPO_BRANCH = 'main'; // Oder 'master', je nachdem, wie dein Haupt-Branch heißt
 const FILE_PATH = 'data/products.json';
 
 exports.handler = async () => {
     try {
-        // Überprüfe hier, ob dein Branch-Name 'main' oder 'master' ist.
-        // Wenn dein Standard-Branch 'master' ist, ändere 'main' in 'master'.
-        const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${FILE_PATH}`;
+        // Direkte URL zu den Rohdaten verwenden, um API-Probleme zu umgehen
+        const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${REPO_BRANCH}/${FILE_PATH}`;
 
         const response = await fetch(url);
 
         if (!response.ok) {
+            // Dies ist entscheidend für das Debugging.
             const errorText = await response.text();
-            console.error(`GitHub API returned status: ${response.status}. Response: ${errorText}`);
-            throw new Error(`GitHub API returned an error: ${response.status}`);
+            console.error(`Error fetching raw data: ${response.status}. Response: ${errorText}`);
+            throw new Error(`Failed to fetch raw data from GitHub: ${response.status}`);
         }
 
         const products = await response.json();
@@ -30,7 +31,7 @@ exports.handler = async () => {
             }
         };
     } catch (error) {
-        console.error('Error fetching products from GitHub:', error);
+        console.error('An error occurred in the Netlify function:', error);
         return {
             statusCode: 500,
             body: JSON.stringify({ error: 'Failed to fetch products' })
