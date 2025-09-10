@@ -18,7 +18,10 @@ exports.handler = async () => {
         });
 
         if (!response.ok) {
-            throw new Error(`GitHub API returned status: ${response.status}`);
+            // Loggt den genauen Status und die Antwort, um das Debugging zu erleichtern
+            const errorText = await response.text();
+            console.error(`GitHub API returned status: ${response.status}. Response: ${errorText}`);
+            throw new Error(`GitHub API returned an error: ${response.status}`);
         }
 
         const products = await response.json();
