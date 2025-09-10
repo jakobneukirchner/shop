@@ -86,7 +86,7 @@
         const contactSection = document.getElementById('contact-section');
 
         let cart = {};
-        let products = []; // Produkte-Array global deklarieren
+        let products = [];
 
         const showSection = (sectionId) => {
             productsSection.classList.add('hidden');
@@ -96,10 +96,11 @@
 
         const getProducts = async () => {
             loadingDiv.classList.remove('hidden');
+            errorDiv.classList.add('hidden');
             try {
                 const response = await fetch('/.netlify/functions/get-products');
                 if (!response.ok) throw new Error('Network response was not ok');
-                products = await response.json(); // Globales Array befüllen
+                products = await response.json();
                 renderProducts();
             } catch (error) {
                 console.error("Failed to fetch products:", error);
@@ -138,7 +139,6 @@
             const button = e.target.closest('.add-to-cart-btn');
             if (button) {
                 const productId = button.dataset.id;
-                // Jetzt greift die Funktion auf das globale 'products'-Array zu
                 const product = products.find(p => p.id === productId);
                 if (product) {
                     if (cart[productId]) {
@@ -147,7 +147,6 @@
                         cart[productId] = { ...product, quantity: 1 };
                     }
                     updateCartCount();
-                    // Custom Modal statt alert()
                     alert(`${product.name} wurde dem Warenkorb hinzugefügt!`);
                 }
             }
@@ -180,13 +179,11 @@
             }
         };
 
-        // Das Laden der Produkte beim Start der Seite aufrufen
         getProducts();
 
         document.addEventListener('click', handleAddToCart);
         document.getElementById('cart-button').addEventListener('click', handleCheckout);
 
-        // Event Listener für die Navigation
         document.querySelector('nav').addEventListener('click', (e) => {
             e.preventDefault();
             const href = e.target.getAttribute('href');
