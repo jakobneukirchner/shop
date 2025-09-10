@@ -1,7 +1,9 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const fetch = require('node-fetch');
+const path = require('path');
+const fs = require('fs');
 
 exports.handler = async (event) => {
+    // Überprüfe, ob die Anfrage eine POST-Anfrage ist
     if (event.httpMethod !== 'POST') {
         return {
             statusCode: 405,
@@ -12,12 +14,10 @@ exports.handler = async (event) => {
     try {
         const { items } = JSON.parse(event.body);
 
-        // Produkte dynamisch von der statischen JSON-Datei laden
-        const productsResponse = await fetch(`${process.env.URL}/data/products.json`);
-        if (!productsResponse.ok) {
-            throw new Error('Produktdaten konnten nicht geladen werden.');
-        }
-        const availableProducts = await productsResponse.json();
+        // Lade die Produktdaten direkt vom Dateisystem, um Netzwerkfehler zu vermeiden
+        const productsPath = path.join(__dirname, '../../data/products.json');
+        const productsData = fs.readFileSync(productsPath, 'utf-8');
+        const availableProducts = JSON.parse(productsData);
 
         const line_items = items.map(item => {
             const productInfo = availableProducts.find(p => p.id === item.id);
