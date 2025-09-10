@@ -7,6 +7,8 @@ const FILE_PATH = 'data/products.json';
 
 exports.handler = async () => {
     try {
+        // Überprüfe hier, ob dein Branch-Name 'main' oder 'master' ist.
+        // Wenn dein Standard-Branch 'master' ist, ändere 'main' in 'master'.
         const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${FILE_PATH}`;
 
         const response = await fetch(url);
