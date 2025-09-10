@@ -1,51 +1,41 @@
 const fetch = require('node-fetch');
 
-exports.handler = async (event) => {
-    // WICHTIG: Passe diese Variablen an dein GitHub-Repo an
-    const REPO_OWNER = 'jakobneukirchner';
-    const REPO_NAME = 'shop';
-    const FILE_PATH = 'data/products.json'; // Passe den Pfad zu deiner JSON-Datei an
+// WICHTIG: Ersetze diese Platzhalter durch deine eigenen GitHub-Informationen
+const REPO_OWNER = 'DEIN_GITHUB_BENUTZERNAME';
+const REPO_NAME = 'DEIN_REPOSITORY_NAME';
+const FILE_PATH = 'data/products.json';
 
-    // Dieser Token wird über Netlify-Umgebungsvariablen bereitgestellt
-    const GITHUB_PAT = process.env.GITHUB_PAT;
-
-    if (!GITHUB_PAT) {
-        return {
-            statusCode: 500,
-            body: 'GITHUB_PAT environment variable not set.',
-        };
-    }
-
+exports.handler = async () => {
     try {
-        const response = await fetch(
-            `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
-            {
-                headers: {
-                    'Authorization': `token ${GITHUB_PAT}`,
-                    'Accept': 'application/vnd.github.v3.raw',
-                },
+        const githubToken = process.env.GITHUB_PAT;
+        const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'Accept': 'application/vnd.github.v3.raw'
             }
-        );
+        });
 
         if (!response.ok) {
-            console.error('GitHub API-Fehler:', response.status, response.statusText);
-            return {
-                statusCode: response.status,
-                body: JSON.stringify({ error: 'Failed to fetch file from GitHub.' }),
-            };
+            throw new Error(`GitHub API returned status: ${response.status}`);
         }
 
-        const data = await response.json();
+        const products = await response.json();
 
         return {
             statusCode: 200,
-            body: JSON.stringify(data),
+            body: JSON.stringify(products),
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            }
         };
     } catch (error) {
-        console.error('Fehler beim Abrufen der Produktdaten:', error);
+        console.error('Error fetching products from GitHub:', error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: error.message }),
+            body: JSON.stringify({ error: 'Failed to fetch products' })
         };
     }
 };
