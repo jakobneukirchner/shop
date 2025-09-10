@@ -7,12 +7,10 @@ const FILE_PATH = 'data/products.json';
 
 exports.handler = async () => {
     try {
-        const githubToken = process.env.GITHUB_PAT;
         const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
 
         const response = await fetch(url, {
             headers: {
-                'Authorization': `token ${githubToken}`,
                 'Accept': 'application/vnd.github.v3.raw'
             }
         });
