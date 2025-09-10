@@ -1,33 +1,5 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-
-// Sichere Produktdaten direkt in der Funktion, um Dateizugriffsfehler zu vermeiden
-const availableProducts = [
-  {
-    "id": "prod_Pz6eP9xQ0yH1r2g",
-    "name": "Minimalistischer Schreibtischstuhl",
-    "price": 24999,
-  },
-  {
-    "id": "prod_Pz6eP9xQ0yH1r2h",
-    "name": "Zeitloser Holztisch",
-    "price": 49999,
-  },
-  {
-    "id": "prod_Pz6eP9xQ0yH1r2i",
-    "name": "Elegante Stehlampe",
-    "price": 12999,
-  },
-  {
-    "id": "prod_Pz6eP9xQ0yH1r2j",
-    "name": "Kunstvolles Wandbild",
-    "price": 8999,
-  },
-  {
-    "id": "prod_Pz6eP9xQ0yH1r2k",
-    "name": "Gemütliches Kissen-Set",
-    "price": 3499,
-  }
-];
+const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
     if (event.httpMethod !== 'POST') {
@@ -39,6 +11,13 @@ exports.handler = async (event) => {
 
     try {
         const { items } = JSON.parse(event.body);
+
+        // Produkte dynamisch von der statischen JSON-Datei laden
+        const productsResponse = await fetch(`${process.env.URL}/data/products.json`);
+        if (!productsResponse.ok) {
+            throw new Error('Produktdaten konnten nicht geladen werden.');
+        }
+        const availableProducts = await productsResponse.json();
 
         const line_items = items.map(item => {
             const productInfo = availableProducts.find(p => p.id === item.id);
