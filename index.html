@@ -46,7 +46,7 @@
         <nav>
             <a href="#products-section" class="nav-link text-gray-600 mr-4">Home</a>
             <a href="#products-section" class="nav-link text-gray-600 mr-4">Produkte</a>
-            <a href="#" class="nav-link text-gray-600">Kontakt</a>
+            <a href="#contact-section" class="nav-link text-gray-600">Kontakt</a>
         </nav>
         <div class="relative">
             <button id="cart-button" class="bg-gray-200 p-3 rounded-full hover:bg-gray-300 focus:outline-none">
@@ -58,10 +58,21 @@
         </div>
     </header>
 
-    <main id="products-section" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div id="loading" class="col-span-full text-center text-lg text-gray-500 hidden">Lade Produkte...</div>
-        <div id="error-message" class="col-span-full text-center text-red-500 hidden">Produkte konnten nicht geladen werden.</div>
-        <div id="product-container" class="col-span-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    <main id="main-content" class="grid grid-cols-1 gap-6">
+        <!-- Products Section -->
+        <section id="products-section" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div id="loading" class="col-span-full text-center text-lg text-gray-500 hidden">Lade Produkte...</div>
+            <div id="error-message" class="col-span-full text-center text-red-500 hidden">Produkte konnten nicht geladen werden.</div>
+            <div id="product-container" class="col-span-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact-section" class="hidden bg-white p-8 rounded-lg shadow-lg text-center">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Kontakt</h2>
+            <p class="text-gray-600">
+                Für Anfragen oder Unterstützung erreichen Sie uns unter: <a href="mailto:info@meine-shop-seite.de" class="text-blue-500 hover:underline">info@meine-shop-seite.de</a>
+            </p>
+        </section>
     </main>
 
     <script src="https://js.stripe.com/v3/"></script>
@@ -71,16 +82,25 @@
         const cartCount = document.getElementById('cart-count');
         const loadingDiv = document.getElementById('loading');
         const errorDiv = document.getElementById('error-message');
+        const productsSection = document.getElementById('products-section');
+        const contactSection = document.getElementById('contact-section');
 
         let cart = {};
+        let products = []; // Produkte-Array global deklarieren
+
+        const showSection = (sectionId) => {
+            productsSection.classList.add('hidden');
+            contactSection.classList.add('hidden');
+            document.getElementById(sectionId).classList.remove('hidden');
+        };
 
         const getProducts = async () => {
             loadingDiv.classList.remove('hidden');
             try {
                 const response = await fetch('/.netlify/functions/get-products');
                 if (!response.ok) throw new Error('Network response was not ok');
-                const products = await response.json();
-                renderProducts(products);
+                products = await response.json(); // Globales Array befüllen
+                renderProducts();
             } catch (error) {
                 console.error("Failed to fetch products:", error);
                 errorDiv.classList.remove('hidden');
@@ -89,7 +109,7 @@
             }
         };
 
-        const renderProducts = (products) => {
+        const renderProducts = () => {
             productContainer.innerHTML = '';
             products.forEach(product => {
                 const productCard = document.createElement('div');
@@ -118,7 +138,8 @@
             const button = e.target.closest('.add-to-cart-btn');
             if (button) {
                 const productId = button.dataset.id;
-                const product = products.find(p => p.id === productId); // Korrigierte Zeile
+                // Jetzt greift die Funktion auf das globale 'products'-Array zu
+                const product = products.find(p => p.id === productId);
                 if (product) {
                     if (cart[productId]) {
                         cart[productId].quantity++;
@@ -126,6 +147,7 @@
                         cart[productId] = { ...product, quantity: 1 };
                     }
                     updateCartCount();
+                    // Custom Modal statt alert()
                     alert(`${product.name} wurde dem Warenkorb hinzugefügt!`);
                 }
             }
@@ -163,6 +185,16 @@
 
         document.addEventListener('click', handleAddToCart);
         document.getElementById('cart-button').addEventListener('click', handleCheckout);
+
+        // Event Listener für die Navigation
+        document.querySelector('nav').addEventListener('click', (e) => {
+            e.preventDefault();
+            const href = e.target.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                const sectionId = href.substring(1);
+                showSection(sectionId);
+            }
+        });
     </script>
 </body>
 </html>
