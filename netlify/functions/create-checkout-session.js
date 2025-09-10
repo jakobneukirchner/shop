@@ -14,14 +14,16 @@ exports.handler = async (event) => {
     try {
         const { items } = JSON.parse(event.body);
 
-        // Lade die Produktdaten direkt vom Dateisystem, um Netzwerkfehler zu vermeiden
-        const productsPath = path.join(__dirname, '../../data/products.json');
+        // Verwende einen zuverlässigeren Pfad, um die Datei zu lesen.
+        // process.cwd() gibt das aktuelle Arbeitsverzeichnis des Projekts zurück.
+        const productsPath = path.join(process.cwd(), 'data', 'products.json');
         const productsData = fs.readFileSync(productsPath, 'utf-8');
         const availableProducts = JSON.parse(productsData);
 
         const line_items = items.map(item => {
             const productInfo = availableProducts.find(p => p.id === item.id);
             if (!productInfo) {
+                // Sende eine detaillierte Fehlermeldung, wenn ein Produkt nicht gefunden wird
                 throw new Error(`Produkt mit der ID ${item.id} wurde nicht gefunden.`);
             }
             return {
