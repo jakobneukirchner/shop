@@ -1,6 +1,5 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const path = require('path');
-const fs = require('fs');
+const fetch = require('node-fetch'); // Stelle sicher, dass node-fetch in deiner package.json enthalten ist
 
 exports.handler = async (event) => {
     // Überprüft, ob die Anfrage eine POST-Anfrage ist.
@@ -14,13 +13,16 @@ exports.handler = async (event) => {
     try {
         const { items } = JSON.parse(event.body);
 
-        // Bestimme den Pfad zur products.json relativ zum aktuellen Funktionsordner.
-        // '__dirname' ist der zuverlässigste Weg, um auf Dateien im Projekt zuzugreifen.
-        const productsPath = path.join(__dirname, '..', '..', 'data', 'products.json');
+        // Hole die Produktdaten vom öffentlichen URL deines Shops.
+        // Dies ist die zuverlässigste Methode in der Netlify-Umgebung.
+        const productsUrl = `${process.env.URL}/data/products.json`;
+        const productsResponse = await fetch(productsUrl);
+
+        if (!productsResponse.ok) {
+            throw new Error(`Failed to fetch products from ${productsUrl}`);
+        }
         
-        // Lese die Datei synchron, um sicherzustellen, dass die Daten verfügbar sind.
-        const productsData = fs.readFileSync(productsPath, 'utf-8');
-        const availableProducts = JSON.parse(productsData);
+        const availableProducts = await productsResponse.json();
 
         const line_items = items.map(item => {
             const productInfo = availableProducts.find(p => p.id === item.id);
