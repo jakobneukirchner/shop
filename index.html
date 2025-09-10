@@ -25,17 +25,17 @@
         .btn-primary:hover {
             background-color: #2563EB;
         }
-        .btn-buy {
-            background-color: #EF4444;
-        }
-        .btn-buy:hover {
-            background-color: #DC2626;
-        }
         .nav-link {
             transition: color 0.2s;
         }
         .nav-link:hover {
             color: #3B82F6;
+        }
+        .modal {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: #FFFFFF;
         }
     </style>
 </head>
@@ -75,6 +75,14 @@
         </section>
     </main>
 
+    <!-- Modal für Nachrichten -->
+    <div id="message-modal" class="modal fixed inset-0 flex items-center justify-center hidden">
+        <div class="modal-content p-6 rounded-lg shadow-xl text-center">
+            <p id="modal-text" class="text-lg font-semibold mb-4"></p>
+            <button id="modal-close" class="bg-gray-200 text-gray-800 py-2 px-4 rounded-full hover:bg-gray-300">Schließen</button>
+        </div>
+    </div>
+
     <script src="https://js.stripe.com/v3/"></script>
     <script>
         const stripe = Stripe("pk_live_51S3J7kRe5qX74hi1SIM1tos4THj24Yszjh9fRyKL5VxFFiarH3Y2bFqmpvQIbbsSajwQVl9a4YK4qxZlF8rwGdjh00DZjAYX7x");
@@ -84,9 +92,21 @@
         const errorDiv = document.getElementById('error-message');
         const productsSection = document.getElementById('products-section');
         const contactSection = document.getElementById('contact-section');
+        const messageModal = document.getElementById('message-modal');
+        const modalText = document.getElementById('modal-text');
+        const modalCloseBtn = document.getElementById('modal-close');
 
         let cart = {};
         let products = [];
+
+        const showMessageModal = (message) => {
+            modalText.textContent = message;
+            messageModal.classList.remove('hidden');
+        };
+
+        modalCloseBtn.addEventListener('click', () => {
+            messageModal.classList.add('hidden');
+        });
 
         const showSection = (sectionId) => {
             productsSection.classList.add('hidden');
@@ -98,7 +118,8 @@
             loadingDiv.classList.remove('hidden');
             errorDiv.classList.add('hidden');
             try {
-                const response = await fetch('/.netlify/functions/get-products');
+                // Neuer, zuverlässiger Pfad zu den statischen Daten
+                const response = await fetch('/data/products.json');
                 if (!response.ok) throw new Error('Network response was not ok');
                 products = await response.json();
                 renderProducts();
@@ -112,22 +133,29 @@
 
         const renderProducts = () => {
             productContainer.innerHTML = '';
-            products.forEach(product => {
-                const productCard = document.createElement('div');
-                productCard.className = "bg-white p-6 rounded-lg shadow-lg card";
-                productCard.innerHTML = `
-                    <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover rounded-lg mb-4">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-2">${product.name}</h2>
-                    <p class="text-gray-600 mb-4">${product.description}</p>
-                    <div class="flex items-center justify-between">
-                        <span class="text-2xl font-bold text-gray-900">${(product.price / 100).toFixed(2)} €</span>
-                        <button class="add-to-cart-btn bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 transition-colors" data-id="${product.id}">
-                            In den Warenkorb
-                        </button>
-                    </div>
-                `;
-                productContainer.appendChild(productCard);
-            });
+            if (products.length === 0) {
+                const noProductsMessage = document.createElement('p');
+                noProductsMessage.className = 'col-span-full text-center text-gray-500';
+                noProductsMessage.textContent = 'Aktuell sind keine Produkte verfügbar.';
+                productContainer.appendChild(noProductsMessage);
+            } else {
+                products.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.className = "bg-white p-6 rounded-lg shadow-lg card";
+                    productCard.innerHTML = `
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover rounded-lg mb-4">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-2">${product.name}</h2>
+                        <p class="text-gray-600 mb-4">${product.description}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl font-bold text-gray-900">${(product.price / 100).toFixed(2)} €</span>
+                            <button class="add-to-cart-btn bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 transition-colors" data-id="${product.id}">
+                                In den Warenkorb
+                            </button>
+                        </div>
+                    `;
+                    productContainer.appendChild(productCard);
+                });
+            }
         };
 
         const updateCartCount = () => {
@@ -147,7 +175,7 @@
                         cart[productId] = { ...product, quantity: 1 };
                     }
                     updateCartCount();
-                    alert(`${product.name} wurde dem Warenkorb hinzugefügt!`);
+                    showMessageModal(`${product.name} wurde dem Warenkorb hinzugefügt!`);
                 }
             }
         };
@@ -171,11 +199,11 @@
                 const result = await stripe.redirectToCheckout({ sessionId });
 
                 if (result.error) {
-                    alert(result.error.message);
+                    showMessageModal(result.error.message);
                 }
             } catch (error) {
                 console.error("Checkout failed:", error);
-                alert("Fehler beim Checkout. Bitte versuchen Sie es erneut.");
+                showMessageModal("Fehler beim Checkout. Bitte versuchen Sie es erneut.");
             }
         };
 
