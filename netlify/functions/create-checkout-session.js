@@ -1,5 +1,4 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const fetch = require('node-fetch'); // Stelle sicher, dass node-fetch in deiner package.json enthalten ist
 
 exports.handler = async (event) => {
     // Überprüft, ob die Anfrage eine POST-Anfrage ist.
@@ -13,16 +12,11 @@ exports.handler = async (event) => {
     try {
         const { items } = JSON.parse(event.body);
 
-        // Hole die Produktdaten vom öffentlichen URL deines Shops.
-        // Dies ist die zuverlässigste Methode in der Netlify-Umgebung.
-        const productsUrl = `${process.env.URL}/data/products.json`;
-        const productsResponse = await fetch(productsUrl);
-
-        if (!productsResponse.ok) {
-            throw new Error(`Failed to fetch products from ${productsUrl}`);
-        }
-        
-        const availableProducts = await productsResponse.json();
+        // Verwende statische Produktdaten für den Checkout.
+        const availableProducts = [
+            { id: "prod_1", name: "Produkt 1", price: 50 }, // 50 Cent
+            { id: "prod_2", name: "Produkt 2", price: 67 }, // 67 Cent
+        ];
 
         const line_items = items.map(item => {
             const productInfo = availableProducts.find(p => p.id === item.id);
