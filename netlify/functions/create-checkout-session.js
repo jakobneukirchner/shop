@@ -1,7 +1,35 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
+// Sichere Produktdaten direkt in der Funktion, um Dateizugriffsfehler zu vermeiden
+const availableProducts = [
+  {
+    "id": "prod_Pz6eP9xQ0yH1r2g",
+    "name": "Minimalistischer Schreibtischstuhl",
+    "price": 24999,
+  },
+  {
+    "id": "prod_Pz6eP9xQ0yH1r2h",
+    "name": "Zeitloser Holztisch",
+    "price": 49999,
+  },
+  {
+    "id": "prod_Pz6eP9xQ0yH1r2i",
+    "name": "Elegante Stehlampe",
+    "price": 12999,
+  },
+  {
+    "id": "prod_Pz6eP9xQ0yH1r2j",
+    "name": "Kunstvolles Wandbild",
+    "price": 8999,
+  },
+  {
+    "id": "prod_Pz6eP9xQ0yH1r2k",
+    "name": "Gemütliches Kissen-Set",
+    "price": 3499,
+  }
+];
+
 exports.handler = async (event) => {
-    // Überprüfe, ob die Anfrage eine POST-Anfrage ist
     if (event.httpMethod !== 'POST') {
         return {
             statusCode: 405,
@@ -10,20 +38,36 @@ exports.handler = async (event) => {
     }
 
     try {
-        const { lineItems } = JSON.parse(event.body);
+        const { items } = JSON.parse(event.body);
 
-        // Erstelle die Checkout-Session mit den übergebenen Produktdaten
+        const line_items = items.map(item => {
+            const productInfo = availableProducts.find(p => p.id === item.id);
+            if (!productInfo) {
+                throw new Error(`Produkt mit der ID ${item.id} wurde nicht gefunden.`);
+            }
+            return {
+                price_data: {
+                    currency: 'eur',
+                    product_data: {
+                        name: productInfo.name,
+                    },
+                    unit_amount: productInfo.price,
+                },
+                quantity: item.quantity,
+            };
+        });
+
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
-            line_items: lineItems,
+            line_items,
             mode: 'payment',
-            success_url: `${process.env.URL}/success`, // Passe dies an deine Erfolgsseite an
-            cancel_url: `${process.env.URL}/`,        // Passe dies an deine Abbruchseite an
+            success_url: `${process.env.URL}/success.html`,
+            cancel_url: `${process.env.URL}/`,
         });
 
         return {
             statusCode: 200,
-            body: JSON.stringify({ id: session.id }),
+            body: JSON.stringify({ sessionId: session.id }),
         };
     } catch (error) {
         console.error('Stripe-Fehler:', error.message);
