@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 // WICHTIG: Ersetze diese Platzhalter durch deine eigenen GitHub-Informationen
 const REPO_OWNER = 'jakobneukirchner';
 const REPO_NAME = 'shop';
-const FILE_PATH = 'data/products.json';
+const FILE_PATH = 'shop-main/data/products.json';
 
 exports.handler = async () => {
     try {
@@ -16,7 +16,6 @@ exports.handler = async () => {
         });
 
         if (!response.ok) {
-            // Loggt den genauen Status und die Antwort, um das Debugging zu erleichtern
             const errorText = await response.text();
             console.error(`GitHub API returned status: ${response.status}. Response: ${errorText}`);
             throw new Error(`GitHub API returned an error: ${response.status}`);
