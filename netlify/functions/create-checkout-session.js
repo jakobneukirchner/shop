@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 exports.handler = async (event) => {
-    // Überprüfe, ob die Anfrage eine POST-Anfrage ist
+    // Überprüft, ob die Anfrage eine POST-Anfrage ist.
     if (event.httpMethod !== 'POST') {
         return {
             statusCode: 405,
@@ -14,16 +14,18 @@ exports.handler = async (event) => {
     try {
         const { items } = JSON.parse(event.body);
 
-        // Verwende einen zuverlässigeren Pfad, um die Datei zu lesen.
-        // process.cwd() gibt das aktuelle Arbeitsverzeichnis des Projekts zurück.
-        const productsPath = path.join(process.cwd(), 'data', 'products.json');
+        // Bestimme den Pfad zur products.json relativ zum aktuellen Funktionsordner.
+        // '__dirname' ist der zuverlässigste Weg, um auf Dateien im Projekt zuzugreifen.
+        const productsPath = path.join(__dirname, '..', '..', 'data', 'products.json');
+        
+        // Lese die Datei synchron, um sicherzustellen, dass die Daten verfügbar sind.
         const productsData = fs.readFileSync(productsPath, 'utf-8');
         const availableProducts = JSON.parse(productsData);
 
         const line_items = items.map(item => {
             const productInfo = availableProducts.find(p => p.id === item.id);
             if (!productInfo) {
-                // Sende eine detaillierte Fehlermeldung, wenn ein Produkt nicht gefunden wird
+                // Gibt eine detaillierte Fehlermeldung aus, wenn ein Produkt nicht gefunden wird.
                 throw new Error(`Produkt mit der ID ${item.id} wurde nicht gefunden.`);
             }
             return {
